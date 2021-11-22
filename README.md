@@ -11,6 +11,8 @@ You only need to follow these steps once.
 5. Download [CircuitPython 7.0.0](https://circuitpython.org/board/adafruit_itsybitsy_rp2040/) for Adafruit ItsyBitsy RP2040 microcontroller and add the file to the `RPI-RP2` drive.
 6. The LED should flash again and `RPI-RP2` should be replaced by `CIRCUITPY` drive on your PC.
 7. Clone this repo to your PC with `git clone git@github.com:AndrewDrury/SimuStep.git`
-8. Open `SimuStep/main.py` in the Mu python editor from step 2.
-9. Click `Load` to load the code onto the microcontroller.
-10. Click `Run` to run the code on the microcontroller.
+
+## Run Code
+1. Open `SimuStep/main.py` in the Mu python editor.
+2. Click `Load` to load the code onto the microcontroller.
+3. Click `Run` to run the code on the microcontroller.

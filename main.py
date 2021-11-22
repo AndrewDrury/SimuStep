@@ -18,4 +18,7 @@ init.initStates()
 
 # Start main loop
 while True:
+    helper.printInputs()
+    helper.printOutputs()
+    helper.printStates()
     time.sleep(1)
