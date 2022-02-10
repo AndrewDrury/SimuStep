@@ -13,6 +13,6 @@ You only need to follow these steps once.
 7. Clone this repo to your PC with `git clone git@github.com:AndrewDrury/SimuStep.git`
 
 ## Run Code
-1. Open `SimuStep/main.py` in the Mu python editor.
+1. Open `SimuStep/code.py` in the Mu python editor.
 2. Click `Load` to load the code onto the microcontroller.
 3. Click `Run` to run the code on the microcontroller.

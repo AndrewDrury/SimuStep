@@ -5,6 +5,8 @@ import board
 import busio
 import digitalio
 
+from CONSTANTS import ELECTRODE_FREQ
+
 # DEFINE ENUM FOR DEVICE STATES
 class State:
     STANDBY = 0
@@ -26,6 +28,15 @@ def initIO(simuStep):
     # INITIALIZE OUTPUTS
     i2c0 = busio.I2C(board.RX, board.TX)
     simuStep.dac = adafruit_mcp4725.MCP4725(i2c0)
+
+    # # TODO: NEED TO SETUP PROPER PINS
+    simuStep.dacFreq1 = analogio.AnalogOut(board.D5)
+    simuStep.dacFreq2 = analogio.AnalogOut(board.D7)
+
+    # # SET ELECTRODE FREQUENCIES
+    simuStep.dacFreq1.value = ELECTRODE_FREQ
+    simuStep.dacFreq2.value = ELECTRODE_FREQ
+
     simuStep.ledPower = digitalio.DigitalInOut(board.D13)
     simuStep.ledPower.direction = digitalio.Direction.OUTPUT
     simuStep.ledBlue = digitalio.DigitalInOut(board.D12)
@@ -35,9 +46,9 @@ def initIO(simuStep):
     simuStep.ledYellow = digitalio.DigitalInOut(board.D10)
     simuStep.ledYellow.direction = digitalio.Direction.OUTPUT
 
+
 # INITIALIZE STATES
 def initStates(simuStep):
     simuStep.deviceState = State.STANDBY
-    simuStep.elecFreqState = 0
-    simuStep.elecPWState = 0
     simuStep.lowBattery = False
+    simuStep.intensity = 0

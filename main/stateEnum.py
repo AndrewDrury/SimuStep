@@ -1,6 +1,0 @@
-# DEFINE ENUM FOR DEVICE STATES
-class State:
-    STANDBY = 0
-    CALIBRATE = 1
-    WALK = 2
-    REHAB = 3
