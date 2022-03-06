@@ -18,9 +18,9 @@
 
 import time
 
-from CONSTANTS import ELECTRODE_FREQ, ELECTRODE_PW, ELECTRODE_DUTYCYCLE
+from CONSTANTS import ELECTRODE_FREQ, ELECTRODE_PW, ELECTRODE_DUTYCYCLE, ELECTRODE_PERIOD, ELECTRODE_OFFSET
 
-# Defin enum for device states
+# Define enum for device states
 class State:
     STANDBY = 0
     CALIBRATE = 1
@@ -34,29 +34,63 @@ class SimuStep():
 
     # Activate electrodes - used for all modes
     def activateElectrodes(self):
-        self.dac.normalized_value = self.intensity
+        # self.electrodeSignal3.value = True
+        # self.electrodeSignal3.duty_cycle= 65535 // 2
 
-        # # CUSTOM IMPLEMENTATION PULSE WIDTH MODULATION
-        # # print('Intensity: ', self.intensity)
+        # FIRST PULSE
+        self.dac.raw_value = self.intensity
+        # self.dac.raw_value = 4095
+        self.electrodeSignal1.value = True
+        # self.electrodeSignal3.value = True
+        time.sleep(ELECTRODE_PW)
 
-        # periodTime = int(1/ELECTRODE_FREQ * 10000) # Time for one period in 10^-4 seconds
-        # q
-        #     # print('DUTYCYCLEss', ELECTRODE_DUTYCYCLE)
-        #     # print('periodTime', periodTime)
+        # self.dac.raw_value = 0
+        self.electrodeSignal1.value = False
+        # self.electrodeSignal3.value = False
+        time.sleep(ELECTRODE_OFFSET)
 
-        #     # cycleTime is current microseconds in period
-        #     for cycleTime in (cycleTime for cycleTime in range(0, periodTime) if not self.btnMode.value):
-        #         # print(self.dac.normalized_value)
-        #         # print(cycleTime)
-        #         print((self.dac.normalized_value,0))
+         # SECOND PULSE
+        # self.dac.raw_value = self.intensity
+        self.electrodeSignal2.value = True
+        time.sleep(ELECTRODE_PW)
+        # self.dac.raw_value = 0
+        self.electrodeSignal2.value = False       
+        time.sleep(ELECTRODE_OFFSET)
 
-        #         if cycleTime < ELECTRODE_DUTYCYCLE * periodTime:
-        #             self.dac.normalized_value = self.intensity
-        #         else:
-        #             self.dac.normalized_value = 0
+        # # SIMULTANEOUS PULSES
+        # # FIRST PULSE
+        # self.dac.raw_value = self.intensity
+        # self.electrodeSignal1.value = True
+        # self.electrodeSignal2.value = True
+        # time.sleep(ELECTRODE_PW)
 
-        #         # Sleep for 1x10^-4 seconds
-        #         time.sleep(1/10000)
+        # # SECOND PULSE
+        # self.electrodeSignal1.value = False
+        # self.electrodeSignal2.value = False 
+        # time.sleep(ELECTRODE_OFFSET)
+
+    def activateElectrodesRehab(self):
+        activationTime = 1 # in seconds
+        offTime = 3 # in seconds
+        currentTime = 0
+
+        self.dac.raw_value = self.intensity
+        signal2Delay = ELECTRODE_PERIOD/2-ELECTRODE_PW
+
+        while currentTime < activationTime and not self.btnMode.value:
+            self.electrodeSignal1.value = True
+            self.electrodeSignal2.value = False
+            print(self.electrodeSignal1.value)
+            time.sleep(ELECTRODE_PW)
+            self.electrodeSignal1.value = False
+            time.sleep(ELECTRODE_OFFSET)
+            self.electrodeSignal2.value = True
+            time.sleep(ELECTRODE_PW)
+            self.electrodeSignal2.value = False
+            print(self.electrodeSignal1.value)        
+            time.sleep(ELECTRODE_OFFSET)
+            currentTime += ELECTRODE_PERIOD
+        time.sleep(offTime)
 
     # Deactivate electrodes
     def deactivateElectrodes(self):
@@ -68,8 +102,12 @@ class SimuStep():
         return (pin.value*3.3)/65536
 
     # Set electrode Intensity based on potentiometer position
-    def setIntensity(self):
-        self.intensity = self.pot.value/65536
+    def setIntensity(self, intensity=0):
+        if intensity:
+            self.intensity = int(4095 * intensity / 3.3)
+        else:
+            self.intensity = int((self.pot.value/65536) * 4095)
+        print(3.3*self.intensity/4095)
 
     # Print all Inputs
     def printInputs(self):
@@ -121,7 +159,8 @@ class SimuStep():
         self.ledGreen.value = False
         self.ledYellow.value = False
 
-        self.deviceState = (self.deviceState + 1) % 4
+        # self.deviceState = (self.deviceState + 1) % 4
+        self.deviceState = (self.deviceState + 1) % 2
         
         if self.deviceState == State.CALIBRATE:
             print('CALIBRATE MODE ' + '-'*12)

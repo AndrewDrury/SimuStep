@@ -51,5 +51,3 @@ def walk(SimuStep):
     else:
         SimuStep.ledYellow.value = False
         SimuStep.ledBlue.value = False
-
-        SimuStep.deactivateElectrodes()

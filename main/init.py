@@ -4,6 +4,7 @@ import analogio
 import board
 import busio
 import digitalio
+import pwmio
 
 from CONSTANTS import ELECTRODE_FREQ
 
@@ -18,7 +19,7 @@ class State:
 def initIO(simuStep):
     # INITIALIZE INPUTS
     simuStep.pot = analogio.AnalogIn(board.A0)
-    simuStep.emg = analogio.AnalogIn(board.A1)
+    # simuStep.emg = analogio.AnalogIn(board.A1)
     simuStep.btnMode = digitalio.DigitalInOut(board.D9)
     simuStep.btnMode.direction = digitalio.Direction.INPUT
     simuStep.btnMode.pull = digitalio.Pull.UP
@@ -29,13 +30,14 @@ def initIO(simuStep):
     i2c0 = busio.I2C(board.RX, board.TX)
     simuStep.dac = adafruit_mcp4725.MCP4725(i2c0)
 
-    # # TODO: NEED TO SETUP PROPER PINS
-    simuStep.dacFreq1 = analogio.AnalogOut(board.D5)
-    simuStep.dacFreq2 = analogio.AnalogOut(board.D7)
+    simuStep.electrodeSignal1 = digitalio.DigitalInOut(board.D5)
+    simuStep.electrodeSignal1.direction = digitalio.Direction.OUTPUT
+    simuStep.electrodeSignal2 = digitalio.DigitalInOut(board.D7)
+    simuStep.electrodeSignal2.direction = digitalio.Direction.OUTPUT
 
-    # # SET ELECTRODE FREQUENCIES
-    simuStep.dacFreq1.value = ELECTRODE_FREQ
-    simuStep.dacFreq2.value = ELECTRODE_FREQ
+    simuStep.electrodeSignal3 = digitalio.DigitalInOut(board.D3)
+    simuStep.electrodeSignal3.direction = digitalio.Direction.OUTPUT
+    # simuStep.electrodeSignal3 = pwmio.PWMOut(board.D3, duty_cycle=0, frequency=5500)
 
     simuStep.ledPower = digitalio.DigitalInOut(board.D13)
     simuStep.ledPower.direction = digitalio.Direction.OUTPUT

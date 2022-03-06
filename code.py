@@ -39,15 +39,15 @@ while True:
         simuStep.switchMode()
     elif not simuStep.btnMode.value and btnModePushed == True:
         btnModePushed = False
-    
+
     # ENTER CHOSEN MODE
     if simuStep.deviceState == State.CALIBRATE:
         calibrate(simuStep)
     elif simuStep.deviceState == State.WALK:
-        walk(simuStep)  
+        walk(simuStep)
     elif simuStep.deviceState == State.REHAB:
         rehab(simuStep)
-    
+
     # UNCOMMENT TO PRINT INPUTS, OUTPUTS, AND DEVICE STATES - FOR DEBUGGING
         # simuStep.printInputs()
         # simuStep.printOutputs()
